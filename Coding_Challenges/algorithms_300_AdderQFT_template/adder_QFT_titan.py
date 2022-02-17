@@ -17,25 +17,21 @@ def qfunc_adder(m, wires):
 
     # QHACK #
 
+    N = len(wires)
+    n = 2 ** (N - 1)
+    sum = n + m
 
+    phaseN = []
+    for i in range(2 ** N):
+        phaseN.append(i * 2. * np.pi / (2. ** N))
 
-    print (2.**len(wires))
-    phases = []
-    sum = m + 2**(len(wires)-1)
-    print(sum)
+    for wire in wires[len(wires) - 1::-1]:
+        phase_init = 2. ** (N - 1 - wire) * phaseN[n]
+        phase_final = 2. ** (N - 1 - wire) * phaseN[sum]
+        delta_phase = phase_final - phase_init
 
-    for angle in range(2**len(wires)):
+        qml.PhaseShift(delta_phase, wires=wire)
 
-        phases.append(angle*np.pi/(2**len(wires)))
-    for wire in wires[len(wires)-2:0:-1]:
-        qml.ControlledPhaseShift(1.*(2 ** wire) * (phases[sum] - phases[2**(len(wires)-1)]), wires=[wire, len(wires)-1])
-
-
-
-
-
-    #qml.RZ(2.*rotation, wires=wires[len(wires)-1])
-    #qml.RZ(2. * rotation, wires=wires[1])
 
     # QHACK #
 

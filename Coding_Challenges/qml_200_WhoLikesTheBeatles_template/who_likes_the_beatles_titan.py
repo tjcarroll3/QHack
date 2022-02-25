@@ -24,6 +24,25 @@ def distance(A, B):
     # dev = qml.device("default.qubit", ...
     # @qml.qnode(dev)
 
+    dev = qml.device('default.qubit', wires=3)
+
+    @qml.qnode(dev)
+    @qml.transforms.merge_amplitude_embedding ##swap_test doesn't work without this
+    def swap_test(ptA, ptB):
+        qml.AmplitudeEmbedding(features=ptA, wires=1, normalize=True)
+        qml.AmplitudeEmbedding(features=ptB, wires=2, normalize=True)
+
+        qml.Hadamard(wires=0)
+        qml.CSWAP(wires=[0, 1, 2])
+        qml.Hadamard(wires=0)
+
+        return qml.expval(qml.PauliZ(0))
+
+    cosTheta = (swap_test(A, B))**(1/2)
+    dAB = (2.*(1.- cosTheta))**(1/2)
+
+    return dAB
+
     # QHACK #
 
 

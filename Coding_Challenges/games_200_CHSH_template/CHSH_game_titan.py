@@ -19,7 +19,7 @@ def prepare_entangled(alpha, beta):
 
     # QHACK #
     amplitudes = [alpha, 0, 0, beta]
-    qml.AmplitudeEmbedding(amplitudes, wires=[0, 1])  # may want to normalize this
+    qml.AmplitudeEmbedding(amplitudes, wires=[0, 1], normalize=True)  # need to normalize this to avoid norm error
 
     # QHACK #
 
@@ -112,9 +112,9 @@ def optimize(alpha, beta):
     # QHACK #
 
     #Initialize parameters, choose an optimization method and number of steps
-    init_params = np.zeros(4, requires_grad = True)
-    opt = qml.GradientDescentOptimizer(0.1)
-    steps = 100
+    init_params = np.array([np.pi/4, -np.pi/4, np.pi/4, 0], requires_grad = True) # np.array([0, np.pi/4, -np.pi/4, 0.1], requires_grad = True)
+    opt = qml.GradientDescentOptimizer(0.3)
+    steps = 200
 
     # QHACK #
     

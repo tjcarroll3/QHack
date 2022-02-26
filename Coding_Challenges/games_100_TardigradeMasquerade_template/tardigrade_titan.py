@@ -26,7 +26,43 @@ def compute_entanglement(theta):
     dev = qml.device("default.qubit", wires=3)
 
     # QHACK #
+    @qml.qnode(dev)
+    def circuitAB():
 
+
+        qml.PauliX(wires=1)
+
+        qml.Hadamard(wires=0)
+        qml.CNOT(wires=[0, 1])
+
+
+        return qml.density_matrix([1]) #qml.probs(wires=[0, 1])
+
+
+
+    @qml.qnode(dev)
+    def circuitABT():
+
+        #|g>_BT = |0>_B & |0>_T #wires 1 and 2 on 0
+
+        # |e>_BT
+        #Hadamard gate allows for superposition
+        qml.Hadamard(0)
+
+        #Steps to make |e> are
+        #RY, X(1), X(2), CNOT(1,2)
+        #Each gate is controlled with qubit 0
+        qml.CRY(theta, wires=[0,1])
+        qml.CNOT(wires=[0,1])
+        qml.CNOT(wires=[0,2])
+        qml.Toffoli(wires=[0,1,2])
+
+        #X Gate finishes the desired state
+        qml.PauliX(0)
+
+        return qml.density_matrix([1])
+
+    return [second_renyi_entropy(circuitAB()), second_renyi_entropy(circuitABT())]
     # QHACK #
 
 
